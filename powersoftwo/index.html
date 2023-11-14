@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Powers of two scale</title>
+    <meta
+      name="description"
+      content="A typographic scale using the Fibonacci sequence."
+    />
+
+    <!-- Facebook Meta Tags -->
+    <meta
+      property="og:url"
+      content="https://lab.amcc.io/typography/powersoftwo/"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Fibonacci scale" />
+    <meta
+      property="og:description"
+      content="A typographic scale using a powers of two sequence."
+    />
+    <meta
+      property="og:image"
+      content="https://lab.amcc.io/fibscale/image/fib.png"
+    />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="lab.amcc.io" />
+    <meta property="twitter:url" content="https://lab.amcc.io/fibscale/" />
+    <meta name="twitter:title" content="Fibonacci scale" />
+    <meta
+      name="twitter:description"
+      content="A typographic scale using the Fibonacci sequence."
+    />
+    <meta
+      name="twitter:image"
+      content="https://lab.amcc.io/fibscale/image/fib.png"
+    />
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="description"
+      content="A typographic scale using the Fibonacci sequence."
+    />
+    <meta
+      property="og:image"
+      content="https://lab.amcc.io/fibscale/image/fib.png"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta
+      name="viewport"
+      content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width"
+    />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <link rel="stylesheet" href="style.css" />
+    <script type="text/javascript">
+      window.addEventListener("DOMContentLoaded", () => {
+        let textStart = 11;
+        let fibSeq = [1, 1];
+        let shiftArray = [];
+        let shift = 0;
+        let multiply = 1;
+        let fibLength = 14;
+        const sequence = document.getElementById("sequence");
+        const sliderShift = document.querySelector("input[type=range]");
+        const sliderMultiply = document.getElementById("slider-multiply-input");
+        const reset = document.querySelector("button");
+        const shiftVal = document.getElementById("shift-val");
+        const multiplyVal = document.getElementById("multiply-val");
+
+        reset.addEventListener("click", (e) => {
+          e.preventDefault();
+          slider.value = 0;
+          shiftVal.innerHTML = 0;
+          multiplyVal.innerHTML = 1;
+          shift = 0;
+          multiply = 1;
+          sliderMultiply.value = 1;
+          sliderShift.value = 0;
+          shifter(fibSeq);
+          sizeOutput();
+          makeString(shiftArray);
+        });
+
+        sliderShift.addEventListener("input", (e) => {
+          shift = e.target.value;
+          shiftVal.innerHTML = shift;
+          shifter(fibSeq);
+          sizeOutput();
+        });
+        sliderMultiply.addEventListener("input", (e) => {
+          multiply = e.target.value;
+          multiplyVal.innerHTML = multiply;
+          shifter(fibSeq);
+          sizeOutput();
+        });
+
+        const shifter = (array) => {
+          shiftArray = array.map((num) =>
+            Math.round(num * Number(multiply) + Number(shift))
+          );
+
+          makeString(shiftArray);
+        };
+
+        const generate = () => {
+          // for loop to generate fibonacci sequence
+          for (let i = 0; i < fibLength; i++) {
+            fibSeq.push(fibSeq[i] + fibSeq[i + 1]);
+          }
+        };
+
+        const makeString = (array) => {
+          // string from fibSeq comma separated
+          let fibSeqString = array.join(", ");
+
+          sequence.innerHTML = fibSeqString;
+        };
+
+        generate();
+        shifter(fibSeq);
+        makeString(fibSeq);
+
+        const sizeOutput = () => {
+          const output = document.getElementById("output");
+          const outputEls = output.querySelectorAll("span");
+          const outputpx = document.getElementById("output-px");
+          const outputElsPx = outputpx.querySelectorAll("span");
+          console.log("size");
+          outputEls.forEach((span, i) => {
+            span.style.fontSize = null;
+            span.style.fontSize = `${
+              shiftArray[textStart - i] > 0 ? shiftArray[textStart - i] : 0
+            }px`;
+          });
+          outputElsPx.forEach((span, i) => {
+            span.style.fontSize = null;
+            span.style.fontSize = `${shiftArray[textStart - i]}px`;
+            span.innerHTML = `${shiftArray[textStart - i]}`;
+          });
+        };
+        sizeOutput();
+      });
+    </script>
+    <script
+      defer
+      data-domain="lab.amcc.io/fibscale"
+      src="https://plausible.io/js/script.js"
+    ></script>
+  </head>
+  <body>
+    <main>
+      <div class="first">
+        <header>
+          <section class="header-section">
+            <h1>Fibonacci</h1>
+            <div id="sequence">hi</div>
+          </section>
+        </header>
+        <section class="inputs">
+          <form>
+            <div id="slider">
+              <label
+                >shift: <span id="shift-val">0</span
+                ><input type="range" min="0" max="20" step="1" value="0"
+              /></label>
+            </div>
+            <div id="slider-multiply">
+              <label
+                >multiply: <span id="multiply-val">1</span
+                ><input
+                  id="slider-multiply-input"
+                  type="range"
+                  min="1"
+                  max="2"
+                  step="0.05"
+                  value="1"
+              /></label>
+            </div>
+            <div id="button"><button>reset</button></div>
+          </form>
+        </section>
+      </div>
+      <div class="second">
+        <section id="output" class="output">
+          <span>One</span>
+          <span>should</span>
+          <span>never</span>
+          <span>mistake</span>
+          <span>pattern</span>
+          <span>for</span>
+          <span>meaning</span>
+        </section>
+        <section id="output-px" class="output">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </section>
+      </div>
+      <section class="footer-text">
+        <p>
+          In this example the sequence begins as a normal Fibonacci sequence. By
+          moving the sliders you shift, or multiply all the numbers.
+        </p>
+        <p>
+          Shift will change the nature of the scale completely, but this can be
+          useful if you want all the numbers a few pixels bigger or smaller.
+        </p>
+        <p>
+          Multiply will change the numbers by keep it a Fibonacci type sequence,
+          with the same relative distances between the numbers
+        </p>
+        <p>
+          In mathematics, the Fibonacci numbers form a sequence, in which each
+          number is the sum of the two preceding ones. The first few values in
+          the sequence are: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144. The
+          Fibonacci numbers were first described in Indian mathematics, as early
+          as 200 BC in work by Pingala on enumerating possible patterns of
+          Sanskrit poetry formed from syllables of two lengths. They are named
+          after the Italian mathematician Leonardo of Pisa, later known as
+          Fibonacci, who introduced the sequence to Western European mathematics
+          in his 1202 book Liber Abaci.<br /><br />
+          <a href="https://en.wikipedia.org/wiki/Fibonacci_number"
+            >find out more on wikipedia</a
+          >
+        </p>
+      </section>
+    </main>
+    <footer>
+      <section class="made-by">
+        Made by <a href="https://amcc.io">amcc.io</a>
+      </section>
+    </footer>
+  </body>
+</html>
