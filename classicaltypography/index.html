@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Classical Typographic Scale</title>
+    <meta
+      name="description"
+      content="A typographic scale using the classical typographic scaling system."
+    />
+
+    <!-- Facebook Meta Tags -->
+    <meta
+      property="og:url"
+      content="https://lab.amcc.io/typography/powersoftwo/"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Fibonacci scale" />
+    <meta
+      property="og:description"
+      content="A typographic scale using a powers of two sequence."
+    />
+    <meta
+      property="og:image"
+      content="https://lab.amcc.io/fibscale/image/fib.png"
+    />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="lab.amcc.io" />
+    <meta
+      property="twitter:url"
+      content="https://lab.amcc.io/typography/powersoftwo/"
+    />
+    <meta name="twitter:title" content="Fibonacci scale" />
+    <meta
+      name="twitter:description"
+      content="A typographic scale using the Fibonacci sequence."
+    />
+    <meta
+      name="twitter:image"
+      content="https://lab.amcc.io/fibscale/image/fib.png"
+    />
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="description"
+      content="A typographic scale using the Fibonacci sequence."
+    />
+    <meta
+      property="og:image"
+      content="https://lab.amcc.io/fibscale/image/fib.png"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta
+      name="viewport"
+      content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width"
+    />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <link rel="stylesheet" href="../styles/common-styles.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="text/javascript">
+      window.addEventListener("DOMContentLoaded", () => {
+        let textStart = 0;
+        let typeSequence = [];
+        let shift = 0;
+        let initialBaseSize = 12;
+        let baseSize = initialBaseSize;
+        let initialRatio = 2;
+        let ratio = initialRatio;
+        let initialInterval = 5;
+        let interval = initialInterval;
+        let sequenceLength = 26;
+        let sequenceClip = 11;
+        const sequence = document.getElementById("sequence");
+        const startValue = document.getElementById("startValue");
+        const ratioValue = document.getElementById("ratio");
+        const intervalValue = document.getElementById("interval");
+        const sliderMultiply = document.getElementById("slider-multiply-input");
+        const reset = document.querySelector("button");
+        const startValueNumber = document.getElementById("shift-val");
+        const startRatioNumber = document.getElementById("ratio-val");
+        const startIntervalNumber = document.getElementById("interval-val");
+        const multiplyVal = document.getElementById("multiply-val");
+
+        function init() {
+          startValue.value = baseSize;
+          ratioValue.value = ratio;
+          intervalValue.value = interval;
+
+          shift = 0;
+          multiply = 1;
+
+          updateAll();
+        }
+
+        function updateAll() {
+          updateValues();
+          generate();
+          sizeOutput();
+        }
+
+        function updateValues() {
+          startValueNumber.innerHTML = startValue.value;
+          startRatioNumber.innerHTML = ratioValue.value;
+          startIntervalNumber.innerHTML = intervalValue.value;
+        }
+
+        reset.addEventListener("click", (e) => {
+          e.preventDefault();
+          baseSize = initialBaseSize;
+          ratio = initialRatio;
+          interval = initialInterval;
+          init();
+        });
+
+        startValue.addEventListener("input", (e) => {
+          baseSize = e.target.value;
+          updateAll();
+        });
+
+        ratioValue.addEventListener("input", (e) => {
+          ratio = e.target.value;
+          updateAll();
+        });
+
+        intervalValue.addEventListener("input", (e) => {
+          interval = e.target.value;
+          updateAll();
+        });
+
+        const generate = () => {
+          typeSequence = [];
+          for (let i = 0; i < sequenceLength; i++) {
+            let number = baseSize * Math.pow(ratio, i / interval);
+            typeSequence.push(Math.round(number));
+          }
+          makeString(typeSequence);
+        };
+
+        const makeString = (array) => {
+          // string from sequence comma separated
+          // let sequenceString = array.join(", ");
+          sequence.innerHTML = "";
+
+          let sequenceString = array.map((item, i) => {
+            return i % interval === 0
+              ? `<span class="note">${item}</span>`
+              : item;
+          });
+
+          sequence.innerHTML = sequenceString.join(", ");
+        };
+
+        const sizeOutput = () => {
+          const pxMultiplier = 1.3333333333333333;
+          const emMultiplier = 0.08333333333333333;
+          const output = document.getElementById("output");
+          const root = document.querySelector(":root");
+          root.style.setProperty(
+            "--h2-size",
+            typeSequence[interval * 2] * emMultiplier + "em"
+          );
+          root.style.setProperty(
+            "--h3-size",
+            typeSequence[interval * 1] * emMultiplier + "em"
+          );
+          root.style.setProperty(
+            "--p-size",
+            typeSequence[interval * 0] * emMultiplier + "em"
+          );
+          output.innerHTML = "";
+          // makeSequence("pt", 1);
+          makeSequence("px", pxMultiplier);
+          makeSequence("em", emMultiplier);
+          function makeSequence(type, multiplier) {
+            const seqWrapper = document.createElement("div");
+            let shortsequence = typeSequence.slice(0, sequenceClip);
+            shortsequence.forEach((size, i) => {
+              const textDiv = document.createElement("span");
+              textDiv.style.fontSize = `${size * multiplier}${type}`;
+              if (i % interval === 0) textDiv.style.color = "red";
+              let fontSize = Math.round(size * multiplier * 100) / 100;
+              const content = document.createTextNode(fontSize + type + " ");
+              textDiv.appendChild(content);
+              seqWrapper.appendChild(textDiv);
+            });
+            output.appendChild(seqWrapper);
+          }
+        };
+
+        init();
+      });
+    </script>
+  </head>
+  <body>
+    <main>
+      <div class="first">
+        <header>
+          <section class="header-section">
+            <h1>Classical Scale</h1>
+            <p>Scale in points (pt)</p>
+            <div id="sequence"></div>
+          </section>
+        </header>
+        <section class="inputs">
+          <form>
+            <div class="full-width-slider">
+              <label
+                >baseline: <span id="shift-val">0</span> pt<input
+                  id="startValue"
+                  type="range"
+                  min="6"
+                  max="18"
+                  step="1"
+                  value="12"
+              /></label>
+              <label
+                >ratio: <span id="ratio-val">0</span
+                ><input
+                  id="ratio"
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.01"
+                  value="2"
+              /></label>
+              <label
+                >interval: <span id="interval-val">0</span
+                ><input
+                  id="interval"
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value="5"
+              /></label>
+            </div>
+
+            <div id="button"><button>reset</button></div>
+          </form>
+        </section>
+      </div>
+      <div class="second">
+        <div class="explanation">
+          <header>
+            <h2>The classical typographic scale</h2>
+            <p>
+              The classical typographic scale, mathematically adjusted to work
+              over multiple ratios, interval and fundamental frequencies.
+            </p>
+          </header>
+
+          <h3>How it works</h3>
+          <p>
+            The traditional typographic scale is a sequence of sizes that work
+            in a harmonic manner very similar to musical scales. There are a
+            number of elements of this scale:
+          </p>
+          <h3>Baseline font size</h3>
+          <p>
+            Traditionally the baseline font size is 12 pt, 1 pica. In web
+            typography this equates to 16 px or 1 em.
+          </p>
+          <h3>Ratio</h3>
+          <p>
+            The ratio of a traditional typographic scale is 2, with each
+            interval being twice as big as the last
+          </p>
+          <h3>Interval</h3>
+          <p>
+            In music there are twelve interval in an octave, in typography there
+            are traditionally 5 sizes in an interval
+          </p>
+          <hr />
+          <p>Find out more at the links below</p>
+          <p>
+            <a href="https://spencermortensen.com/articles/typographic-scale/"
+              >spencermortensen.com/articles/typographic-scale</a
+            >
+            <br />
+            <a href="https://www.layoutgridcalculator.com/type-scale/"
+              >layoutgridcalculator.com/type-scale</a
+            >
+          </p>
+        </div>
+      </div>
+      <section class="footer-text">
+        <h2>Web font sizes</h2>
+        <section id="output" class="output"></section>
+      </section>
+    </main>
+
+    <footer>
+      <section class="made-by">
+        Made by <a href="https://amcc.io">amcc.io</a>
+      </section>
+    </footer>
+  </body>
+</html>

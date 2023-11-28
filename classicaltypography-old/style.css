@@ -2,5 +2,15 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap");
 
 :root {
-  --bg-colour: #00f7ff;
+  --bg-colour: wheat;
+}
+
+h1 {
+  color: black;
+}
+.note {
+  color: red;
+}
+#sequence {
+  font-size: 1.5em;
 }

@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap");
+
+:root {
+  --bg-colour: wheat;
+
+  --h2-size: 4em;
+  --h3-size: 2em;
+  --p-size: 1em;
+
+  --first: 30vw;
+  --margin: 2em;
+}
+
+h1 {
+  color: black;
+  /* font-size: clamp(4rem, 5vw + 1rem, 6rem); */
+  font-size: clamp(4rem, 5vw + 1rem, 6rem);
+  margin: 0 0 0.5em;
+}
+.note {
+  color: red;
+}
+.first {
+  color: black;
+  font-size: 1.5rem;
+  width: var(--first);
+}
+.second {
+  width: 100%;
+}
+.inputs {
+  color: white;
+}
+#sequence {
+  font-size: 1.5rem;
+}
+#output {
+  display: flex;
+  gap: 4em;
+}
+#output span {
+  display: block;
+}
+.header-section {
+  /* position: relative; */
+  min-height: 45svh;
+}
+.footer-text {
+  width: 100%;
+  /* max-width: 1000px; */
+}
+
+.explanation {
+  padding: 0 2em 2em 2em;
+  max-width: calc(60ch + calc(var(--margin) * 2));
+}
+.explanation header {
+  background-color: transparent;
+}
+.explanation header {
+  margin: 2em 0 3em 0;
+}
+.explanation h2 {
+  font-size: var(--h2-size);
+}
+.explanation h3 {
+  font-size: var(--h3-size);
+}
+.explanation {
+  font-size: var(--p-size);
+}
+
+.output {
+  display: inline-block;
+  padding: 0;
+}
+
+button {
+  border-radius: 4px;
+}
+
+@media screen and (max-width: var(--desktop)) {
+  .first {
+    width: 100%;
+  }
+}

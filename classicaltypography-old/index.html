@@ -69,92 +69,93 @@
     <link rel="stylesheet" href="style.css" />
     <script type="text/javascript">
       window.addEventListener("DOMContentLoaded", () => {
-        let textStart = 7;
-        let powerSequence = [];
-        let shiftArray = [];
+        let textStart = 0;
+        let typeSequence = [];
         let shift = 0;
-        let multiply = 1;
-        let powerLength = 11;
+        let initialBaseSize = 12;
+        let baseSize = initialBaseSize;
+        let ratio = 2;
+        let notes = 5;
+        let sequenceLength = 11;
         const sequence = document.getElementById("sequence");
-        const sliderShift = document.querySelector("input[type=range]");
+        const startValue = document.getElementById("startValue");
         const sliderMultiply = document.getElementById("slider-multiply-input");
         const reset = document.querySelector("button");
-        const shiftVal = document.getElementById("shift-val");
+        const startValueNumber = document.getElementById("shift-val");
         const multiplyVal = document.getElementById("multiply-val");
+
+        function init() {
+          updateValues();
+
+          startValue.value = baseSize;
+          shift = 0;
+          multiply = 1;
+
+          generate();
+          sizeOutput();
+        }
+
+        function updateValues() {
+          startValueNumber.innerHTML = startValue.value;
+        }
 
         reset.addEventListener("click", (e) => {
           e.preventDefault();
-          slider.value = 0;
-          shiftVal.innerHTML = 0;
-          multiplyVal.innerHTML = 1;
-          shift = 0;
-          multiply = 1;
-          sliderMultiply.value = 1;
-          sliderShift.value = 0;
-          shifter(powerSequence);
-          sizeOutput();
-          makeString(shiftArray);
+          baseSize = initialBaseSize;
+          init();
         });
 
-        sliderShift.addEventListener("input", (e) => {
-          shift = e.target.value;
-          shiftVal.innerHTML = shift;
-          shifter(powerSequence);
+        startValue.addEventListener("input", (e) => {
+          baseSize = e.target.value;
+          startValueNumber.innerHTML = shift;
+          generate();
           sizeOutput();
+          updateValues();
         });
-        sliderMultiply.addEventListener("input", (e) => {
-          multiply = e.target.value;
-          multiplyVal.innerHTML = multiply;
-          shifter(powerSequence);
-          sizeOutput();
-        });
-
-        const shifter = (array) => {
-          shiftArray = array.map((num) =>
-            Math.round(num * Number(multiply) + Number(shift))
-          );
-
-          makeString(shiftArray);
-        };
 
         const generate = () => {
-          // for loop to generate fibonacci sequence
-          for (let i = 0; i < powerLength; i++) {
-            powerSequence.push(Math.pow(2, i + 1));
+          typeSequence = [];
+          for (let i = 0; i < sequenceLength; i++) {
+            let number = baseSize * Math.pow(ratio, i / notes);
+            typeSequence.push(Math.round(number));
           }
+          makeString(typeSequence);
+          console.log(typeSequence);
         };
 
         const makeString = (array) => {
-          // string from powerSequence comma separated
-          let powerSequenceString = array.join(", ");
+          // string from sequence comma separated
+          // let sequenceString = array.join(", ");
 
-          sequence.innerHTML = powerSequenceString;
+          let sequenceString = array.map((item, i) => {
+            return i % notes === 0 ? `<span class="note">${item}</span>` : item;
+          });
+
+          sequence.innerHTML = sequenceString.join(", ");
         };
-
-        generate();
-        console.log(powerSequence);
-        shifter(powerSequence);
-        makeString(powerSequence);
-        console.log(shiftArray);
 
         const sizeOutput = () => {
           const output = document.getElementById("output");
           const outputEls = output.querySelectorAll("span");
           const outputpx = document.getElementById("output-px");
           const outputElsPx = outputpx.querySelectorAll("span");
-          outputEls.forEach((span, i) => {
-            span.style.fontSize = null;
-            span.style.fontSize = `${
-              shiftArray[textStart - i] > 0 ? shiftArray[textStart - i] : 0
-            }px`;
-          });
-          outputElsPx.forEach((span, i) => {
-            span.style.fontSize = null;
-            span.style.fontSize = `${shiftArray[textStart - i]}px`;
-            span.innerHTML = `${shiftArray[textStart - i]}`;
+          console.log(outputElsPx);
+          // console.log(typeSequence);
+          typeSequence.forEach((size, i) => {
+            if (i < outputEls.length) {
+              outputEls[i].style.fontSize = `${size}px`;
+            }
+            if (i < outputElsPx.length) {
+              outputElsPx[i].style.fontSize = `${size}px`;
+              i % notes === 0
+                ? (outputElsPx[i].style.color = "red")
+                : outputElsPx[i].style.color === "black";
+              outputElsPx[i].innerHTML = size + "pt";
+            }
           });
         };
-        sizeOutput();
+
+        init();
       });
     </script>
   </head>
@@ -163,30 +164,25 @@
       <div class="first">
         <header>
           <section class="header-section">
-            <h1>Powers of two</h1>
-            <div id="sequence">hi</div>
+            <h1>Classical Scale</h1>
+            <div id="sequence"></div>
           </section>
         </header>
         <section class="inputs">
           <form>
-            <div id="slider">
+            <div class="full-width-slider">
               <label
-                >shift: <span id="shift-val">0</span
-                ><input type="range" min="0" max="20" step="1" value="0"
-              /></label>
-            </div>
-            <div id="slider-multiply">
-              <label
-                >multiply: <span id="multiply-val">1</span
+                >start value: <span id="shift-val">0</span
                 ><input
-                  id="slider-multiply-input"
+                  id="startValue"
                   type="range"
-                  min="1"
-                  max="2"
-                  step="0.05"
-                  value="1"
+                  min="6"
+                  max="24"
+                  step="1"
+                  value="12"
               /></label>
             </div>
+
             <div id="button"><button>reset</button></div>
           </form>
         </section>
